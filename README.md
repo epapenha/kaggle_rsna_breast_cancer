@@ -44,6 +44,7 @@ rm assets/trained/rsna-breast-cancer-detection-best-ckpts.zip
     - [5.3.6. Checkpoints selection](#536-checkpoints-selection)
     - [5.3.7. Convert selected best Convnext models to TensorRT](#537-convert-selected-best-convnext-models-to-tensorrt)
     - [5.3.8. Submission](#538-submission)
+- [6. CHANGES IN THIS FORK](#6-fork-changes)
 
 
 
@@ -366,3 +367,5 @@ Behaviours:
 - Create a temporary directory storing 8-bits png images at `{TEMP_DIR}/pngs/` and expected to be removed once inference done. 
 - Save submission csv result to `{SUBMISSION_DIR}/submission.csv`
 
+
+# 6. CHANGES IN THIS FORK
