@@ -196,7 +196,7 @@ def broadcast_trt_tensors(network, trt_tensors, broadcast_ndim):
             print(t.shape)
             print('list=', [e for e in t.shape])
             print("Tshape type=", type(t.shape))
-            print(t.shape[0])
+            print('broadcast_ndim = ', broadcast_ndim)
             
             if len(t.shape) < broadcast_ndim:
                 # append 1 size dims to front
