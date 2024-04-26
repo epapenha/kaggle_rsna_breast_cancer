@@ -39,6 +39,23 @@ def parse_args():
         type=str,
         default=None,
         help='Path to TensorRT engine of YOLOX ROI detection model.')
+    parser.add_argument(
+        '--raw-data-dir',
+        type=str,
+        default=SETTINGS.RAW_DATA_DIR,
+        help='Path to raw data directory.')
+    parser.add_argument(
+        '--datasets',
+        type=str,
+        nargs='+',
+        default=None,
+        help='List of datasets to train on.')
+    parser.add_argument(
+        '--perc-pos',
+        type=float,
+        default=None,
+        help='Percent of cancer cases to include in training (only supported for rsna dataset).')
+
     args = parser.parse_args()
     return args
 
@@ -50,15 +67,24 @@ def main(args):
         ROI_YOLOX_ENGINE_PATH = args.roi_yolox_engine_path
     print('Using YOLOX engine path:', ROI_YOLOX_ENGINE_PATH)
 
-    DATASETS = [
-        'rsna-breast-cancer-detection', 'vindr', 'miniddsm', 'cmmd', 'cddcesm',
-        'bmcd'
-    ]
+    if args.datasets is None:
+        DATASETS = [
+            'rsna-breast-cancer-detection', 'vindr', 'miniddsm', 'cmmd', 'cddcesm',
+            'bmcd'
+        ]
+    else:        
+        DATASETS = args.datasets
+
+    perc_pos = args.perc_pos
+    if perc_pos is not None:
+        assert 0 < perc_pos < 1, f"perc-pos must be between 0 and 1 exclusive"
+        
     STAGES = ['stage1', 'stage2']
 
     for dataset in DATASETS:
         print('Processing', dataset)
-        raw_root_dir = os.path.join(SETTINGS.RAW_DATA_DIR, dataset)
+        raw_root_dir = os.path.join(args.raw_data_dir, dataset)
+
         stage1_images_dir = os.path.join(raw_root_dir, 'stage1_images')
         cleaned_root_dir = os.path.join(SETTINGS.PROCESSED_DATA_DIR,
                                         'classification', dataset)
@@ -80,7 +106,8 @@ def main(args):
             stage1_process_func(raw_root_dir,
                                 stage1_images_dir,
                                 cleaned_root_dir,
-                                force_copy=False)
+                                force_copy=False,
+                                perc_pos=perc_pos)
 
         if 'stage2' in STAGES:
             rm_and_mkdir(cleaned_images_dir)

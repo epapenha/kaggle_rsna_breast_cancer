@@ -62,10 +62,23 @@ def get_dicom_meta(dicom_root_dir, dicom_df, extension='dcm', verbose=False):
 def stage1_process_rsna(raw_root_dir,
                         stage1_images_dir,
                         cleaned_label_path,
-                        force_copy=False):
+                        force_copy=False,
+                        perc_pos=None):
     del force_copy
     dcm_root_dir = os.path.join(raw_root_dir, 'train_images')
     df = pd.read_csv(os.path.join(raw_root_dir, 'train.csv'))
+    if perc_pos is not None:
+        cancer = df[df.cancer==1]
+        no_cancer = df[df.cancer == 0]
+        
+        N = int(len(cancer) // perc_pos)
+        numneg = int((1.0 - perc_pos) * N)
+        no_cancer_samp = no_cancer.sample(numneg)
+
+        # use sample to shuffle
+        df = pd.concat((cancer, no_cancer_samp)).sample(frac=1)
+
+    print("RSNA Training Size: ", len(df))
     dicom_df = get_dicom_meta(dcm_root_dir, df, extension='dcm')
     dicom_df.drop(columns='patient_id', inplace=True)
     dicom_df.rename(columns={
@@ -106,7 +119,8 @@ def stage1_process_rsna(raw_root_dir,
 def stage1_process_vindr(raw_root_dir,
                          stage1_images_dir,
                          cleaned_label_path,
-                         force_copy=False):
+                         force_copy=False,
+                         perc_pos=None):
     del force_copy
     dcm_root_dir = os.path.join(raw_root_dir, 'images')
     df = pd.read_csv(os.path.join(raw_root_dir,
@@ -173,7 +187,8 @@ def stage1_process_vindr(raw_root_dir,
 def stage1_process_miniddsm(raw_root_dir,
                             stage1_images_dir,
                             cleaned_label_path,
-                            force_copy=False):
+                            force_copy=False,
+                            perc_pos=None):
     df = pd.read_excel(
         os.path.join(raw_root_dir, 'Data-MoreThanTwoMasks',
                      'Data-MoreThanTwoMasks.xlsx'))
@@ -261,7 +276,8 @@ def stage1_process_miniddsm(raw_root_dir,
 def stage1_process_cmmd(raw_root_dir,
                         stage1_images_dir,
                         cleaned_label_path,
-                        force_copy=False):
+                        force_copy=False,
+                        perc_pos=None):
     dcm_root_dir = os.path.join(raw_root_dir, 'CMMD')
     # the provided xlsx file can not be read with pd.read_excel()
     # df = pd.read_excel(
@@ -376,7 +392,8 @@ def stage1_process_cmmd(raw_root_dir,
 def stage1_process_cddcesm(raw_root_dir,
                            stage1_images_dir,
                            cleaned_label_path,
-                           force_copy=False):
+                           force_copy=False,
+                           perc_pos=None):
     df = pd.read_excel(os.path.join(raw_root_dir,
                                     'Radiology manual annotations.xlsx'),
                        sheet_name='all')
@@ -435,7 +452,8 @@ def stage1_process_cddcesm(raw_root_dir,
 def stage1_process_bmcd(raw_root_dir,
                         stage1_images_dir,
                         cleaned_label_path,
-                        force_copy=False):
+                        force_copy=False,
+                        perc_pos=None):
     dcm_root_dir = os.path.join(raw_root_dir, 'Dataset')
     df = pd.read_csv(os.path.join(raw_root_dir, 'label.csv'))
     # biopsy = 'NAN' for normal cases
