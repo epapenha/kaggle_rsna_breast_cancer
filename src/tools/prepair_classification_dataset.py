@@ -109,7 +109,7 @@ def main(args):
             stage1_process_func = STAGE1_PROCESS_FUNCS[dataset]
             stage1_process_func(raw_root_dir,
                                 stage1_images_dir,
-                                cleaned_root_dir,
+                                cleaned_label_path,
                                 force_copy=False,
                                 perc_pos=perc_pos)
 
