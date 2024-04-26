@@ -112,7 +112,14 @@ def stage1_process_rsna(raw_root_dir,
         validate='1:1',
     ).reset_index(drop=True)
     merged.to_csv(cleaned_label_path, index=False)
-    make_symlink(dcm_root_dir, stage1_images_dir)
+
+    try:
+        make_symlink(dcm_root_dir, stage1_images_dir)
+    except:
+        stage1_images_dir = dcm_root_dir
+
+    return stage1_images_dir
+
 
 
 ########################### VINDR ###########################
@@ -181,7 +188,7 @@ def stage1_process_vindr(raw_root_dir,
     merged['cancer'] = merged.BIRADS.apply(lambda x: 1 if x == 5 else 0)
     merged.to_csv(cleaned_label_path, index=False)
     make_symlink(dcm_root_dir, stage1_images_dir)
-
+    return stage1_images_dir
 
 ########################### MINI-DDSM ###########################
 def stage1_process_miniddsm(raw_root_dir,
@@ -270,7 +277,7 @@ def stage1_process_miniddsm(raw_root_dir,
         'ddsm_ori_status', 'cancer'
     ]]
     df.to_csv(cleaned_label_path, index=False)
-
+    return stage1_images_dir
 
 ########################### CMMD ###########################
 def stage1_process_cmmd(raw_root_dir,
@@ -386,7 +393,7 @@ def stage1_process_cmmd(raw_root_dir,
 
     merged.sort_values(by=['patient_id', 'image_id'], inplace=True)
     merged.to_csv(cleaned_label_path, index=False)
-
+    return stage1_images_dir
 
 ########################### CDD-CESM ###########################
 def stage1_process_cddcesm(raw_root_dir,
@@ -446,7 +453,7 @@ def stage1_process_cddcesm(raw_root_dir,
             make_symlink(src_path, dst_path)
 
     df.to_csv(cleaned_label_path, index=False)
-
+    return stage1_images_dir
 
 ########################### BMCD ###########################
 def stage1_process_bmcd(raw_root_dir,
@@ -541,3 +548,4 @@ def stage1_process_bmcd(raw_root_dir,
     ]]
     merged.sort_values(by=['patient_id', 'image_id'], inplace=True)
     merged.to_csv(cleaned_label_path, index=False)
+    return stage1_images_dir
