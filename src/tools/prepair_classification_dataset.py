@@ -45,6 +45,11 @@ def parse_args():
         default=SETTINGS.RAW_DATA_DIR,
         help='Path to raw data directory.')
     parser.add_argument(
+        '--clean-data-dir',
+        type=str,
+        default=SETTINGS.PROCESSED_DATA_DIR,
+        help='Path to processed data directory.')
+    parser.add_argument(
         '--datasets',
         type=str,
         nargs='+',
@@ -55,7 +60,7 @@ def parse_args():
         type=float,
         default=None,
         help='Percent of cancer cases to include in training (only supported for rsna dataset).')
-
+    
     args = parser.parse_args()
     return args
 
@@ -80,13 +85,12 @@ def main(args):
         assert 0 < perc_pos < 1, f"perc-pos must be between 0 and 1 exclusive"
         
     STAGES = ['stage1', 'stage2']
-
     for dataset in DATASETS:
         print('Processing', dataset)
         raw_root_dir = os.path.join(args.raw_data_dir, dataset)
 
         stage1_images_dir = os.path.join(raw_root_dir, 'stage1_images')
-        cleaned_root_dir = os.path.join(SETTINGS.PROCESSED_DATA_DIR,
+        cleaned_root_dir = os.path.join(args.clean_data_dir,
                                         'classification', dataset)
         cleaned_label_path = os.path.join(cleaned_root_dir,
                                           'cleaned_label.csv')
