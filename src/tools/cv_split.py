@@ -77,7 +77,10 @@ if __name__ == '__main__':
     os.makedirs(SAVE_DIR, exist_ok= True)
 
     df = pd.read_csv(CSV_LABEL_PATH)
-    spliter = StratifiedGroupKFold(n_splits=4, shuffle=True, random_state=67)
+    if SETTINGS.TRAIN_CV == "false":
+        spliter = StratifiedGroupKFold(n_splits=2, shuffle=True, random_state=67)
+    else:
+        spliter = StratifiedGroupKFold(n_splits=4, shuffle=True, random_state=67)
     
     ret = []
     for i, (train_idxs, val_idxs) in enumerate(spliter.split(df, df.cancer, groups = df.patient_id)):
@@ -94,6 +97,9 @@ if __name__ == '__main__':
         fold_train_df.to_csv(save_fold_train_path, index = False)
         fold_val_df.to_csv(save_fold_val_path, index = False)
         print('\n--------------------\n\n\n')
+        if SETTINGS.TRAIN_CV == "false":
+            # only do simple holdout validation
+            break
 
     for k in ret[0]:
         print(k)
