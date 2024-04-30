@@ -230,7 +230,7 @@ class Exp(_BaseExp):
                          'rsna-breast-cancer-detection', 'cleaned_images')
         }
         train_datasets_info = [('rsna-breast-cancer-detection', rsna_train_dataset_info)]
-        EXTERNAL_DATASETS = ['bmcd', 'cddcesm', 'cmmd', 'miniddsm', 'vindr']
+        EXTERNAL_DATASETS = SETTINGS.EXTERNAL_DATASETS
 
         
         for dataset_name in EXTERNAL_DATASETS:

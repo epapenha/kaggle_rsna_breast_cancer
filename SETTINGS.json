@@ -6,5 +6,6 @@
     "SUBMISSION_DIR": "./submissions/",
     "ASSETS_DIR": "./assets/",
     "TEMP_DIR": "./tmp/",
-    "TRAIN_CV": "false"
+    "TRAIN_CV": "false",
+    "EXTERNAL_DATASETS": ['bmcd', 'cddcesm', 'cmmd', 'miniddsm', 'vindr']
 }   
