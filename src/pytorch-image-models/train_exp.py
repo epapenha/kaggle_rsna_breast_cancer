@@ -70,6 +70,7 @@ from timm.scheduler import create_scheduler_v2, scheduler_kwargs
 from timm.utils import ApexScaler, NativeScaler
 from torch.nn.parallel import DistributedDataParallel as NativeDDP
 from tqdm import tqdm
+import shutil
 
 try:
     from apex import amp
@@ -799,6 +800,17 @@ def main():
 
     if best_metric is not None:
         _logger.info('*** Best metric: {0} (epoch {1})'.format(best_metric, best_epoch))
+
+        # save the best checkpoint
+        src_path = os.path.abspath(os.path.join(
+            saver.checkpoint_dir, f'checkpoint-{best_epoch}.pth.tar')
+        )
+
+        dst_path = os.path.abspath(os.path.join('./output', f'best_convnext.pth.tar'))
+        os.makedirs(os.path.dirname(dst_path), exist_ok=True)
+        print(f'Copy {src_path} to {dst_path}\n')
+        shutil.copy2(src_path, dst_path)
+
 
 
 def train_one_epoch(
