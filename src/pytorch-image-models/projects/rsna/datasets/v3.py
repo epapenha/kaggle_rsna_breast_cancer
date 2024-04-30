@@ -44,7 +44,7 @@ class RSNADataset(Dataset):
                 img_path = os.path.join(data_img_dir, img_name)
                 if i == 0:
                     _tmp_img = cv2.imread(img_path)
-                    assert _tmp_img is not None
+                    assert _tmp_img is not None, f"{img_path} is not found"
                     del _tmp_img
                 label = df.at[i, 'cancer']
                 self.img_paths.append(img_path)
