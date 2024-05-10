@@ -7,13 +7,15 @@ import numpy as np
 import pandas as pd
 from pydicom import dcmread
 from tqdm import tqdm
+from pathlib import Path
 
 from settings import SETTINGS
 from src.utils.misc import make_symlink, rm_and_mkdir
 
 __all__ = [
     'stage1_process_rsna', 'stage1_process_vindr', 'stage1_process_miniddsm',
-    'stage1_process_cmmd', 'stage1_process_cddcesm', 'stage1_process_bmcd'
+    'stage1_process_cmmd', 'stage1_process_cddcesm', 'stage1_process_bmcd',
+    'stage1_process_synthetic'
 ]
 
 
@@ -121,6 +123,45 @@ def stage1_process_rsna(raw_root_dir,
     return stage1_images_dir
 
 
+########################### SYNTHETIC ###########################
+def stage1_process_synthetic(raw_root_dir,
+                             stage1_images_dir,
+                             cleaned_label_path,
+                             force_copy=False,
+                             perc_pos=None,
+                             cached=False):
+    del force_copy
+    
+    pathlist = Path(raw_root_dir).glob('**/*.png')
+    data = {'site_id': [], 'patient_id': [], 'image_id': [], 'cancer': []}
+    
+    for i, path in enumerate(pathlist):
+        # because path is object not string
+        path_in_str = str(path)
+        
+        # caner images are in the c1 and c2 directories
+        dirname = path.parent.parent.name
+        subdir = path.parent.name
+        is_cancer = dirname in ['c1', 'c2']
+        
+        patient_id = i
+        image_id = int(f"{dirname[1:]}{subdir}{path.name[:-4]}")
+        data['site_id'].append(int(subdir))
+        data['patient_id'].append(patient_id)
+        data['image_id'].append(image_id)
+        data['cancer'].append(int(is_cancer))
+
+        if not cached:
+            patient_dir = os.path.join(stage1_images_dir, str(patient_id))
+            os.makedirs(patient_dir, exist_ok=True)
+
+            dst_path = os.path.join(patient_dir, f"{image_id}.png")
+            shutil.copy2(path, dst_path)
+
+    df = pd.DataFrame(data)
+    df.to_csv(cleaned_label_path, index=False)
+       
+    return stage1_images_dir
 
 ########################### VINDR ###########################
 def stage1_process_vindr(raw_root_dir,
