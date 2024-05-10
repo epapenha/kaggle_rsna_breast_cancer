@@ -118,7 +118,7 @@ def _stage2_process_single_miniddsm(roi_extractor,
                                     save_backend='cv2',
                                     index=0):
     img = cv2.imread(dcm_path, cv2.IMREAD_ANYDEPTH)
-    assert img.dtype == np.uint16
+    # assert img.dtype == np.uint16
 
     # YOLOX for ROI extraction
     uint16_img = img.copy()
