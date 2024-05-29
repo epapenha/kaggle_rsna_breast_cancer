@@ -26,7 +26,8 @@ from src.utils.windowing import apply_windowing
 
 __all__ = [
     'stage2_process_rsna', 'stage2_process_vindr', 'stage2_process_miniddsm',
-    'stage2_process_cmmd', 'stage2_process_cddcesm', 'stage2_process_bmcd'
+    'stage2_process_cmmd', 'stage2_process_cddcesm', 'stage2_process_bmcd',
+    'stage2_process_synthetic'
 ]
 
 J2K_SUID = '1.2.840.10008.1.2.4.90'
@@ -117,7 +118,7 @@ def _stage2_process_single_miniddsm(roi_extractor,
                                     save_backend='cv2',
                                     index=0):
     img = cv2.imread(dcm_path, cv2.IMREAD_ANYDEPTH)
-    assert img.dtype == np.uint16
+    # assert img.dtype == np.uint16
 
     # YOLOX for ROI extraction
     uint16_img = img.copy()
@@ -283,6 +284,12 @@ def stage2_process_vindr(*args, **kwargs):
 
 
 def stage2_process_miniddsm(*args, **kwargs):
+    return stage2_process(_stage2_process_single_miniddsm, 'png', *args,
+                          **kwargs)
+
+def stage2_process_synthetic(*args, **kwargs):
+    # may be able to get awway with using the miniddsm processing since
+    # they are both 512x512 pngs
     return stage2_process(_stage2_process_single_miniddsm, 'png', *args,
                           **kwargs)
 

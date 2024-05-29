@@ -15,6 +15,7 @@ STAGE1_PROCESS_FUNCS = {
     'cmmd': stage1_process_cmmd,
     'cddcesm': stage1_process_cddcesm,
     'bmcd': stage1_process_bmcd,
+    'synthetic': stage1_process_synthetic
 }
 
 STAGE2_PROCESS_FUNCS = {
@@ -24,6 +25,7 @@ STAGE2_PROCESS_FUNCS = {
     'cmmd': stage2_process_cmmd,
     'cddcesm': stage2_process_cddcesm,
     'bmcd': stage2_process_bmcd,
+    'synthetic': stage2_process_synthetic
 }
 
 
