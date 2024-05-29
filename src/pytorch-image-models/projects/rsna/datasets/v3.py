@@ -33,13 +33,13 @@ class RSNADataset(Dataset):
 
         for data_name, data_info in datasets:
             print('DATANAME:', data_name)
-            data_csv_path = data_info['csv_path']
+            data_csv_path = data_info['csv_path']            
             data_img_dir = data_info['img_dir']
             df = pd.read_csv(data_csv_path)
             self.df = df
             for i in tqdm(range(len(df))):
                 patient_id = df.at[i, 'patient_id']
-                image_id = df.at[i, 'image_id']
+                image_id = df.at[i, 'image_id']                
                 img_name = f'{patient_id}@{image_id}.png'
                 img_path = os.path.join(data_img_dir, img_name)
                 if i == 0:
@@ -54,6 +54,7 @@ class RSNADataset(Dataset):
             f'DATASET TOTAL LENGTH: {len(self.labels)} with positive percent = {sum(self.labels) / len(self.labels)}'
         )
 
+    
     def __len__(self):
         return len(self.img_paths)
 
@@ -69,7 +70,7 @@ class RSNADataset(Dataset):
         if self.augment_fn:
             img = self.augment_fn(img)
         if self.transform_fn:
-            img = self.transform_fn(img)
+            img = self.transform_fn(img)        
         return img, label
 
     def get_sampler_weights(self, pos_neg_ratio):

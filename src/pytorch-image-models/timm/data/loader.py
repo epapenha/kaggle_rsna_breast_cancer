@@ -227,6 +227,7 @@ def create_loader(
     if re_split:
         # apply RE to second half of batch if no aug split otherwise line up with aug split
         re_num_splits = num_aug_splits or 2
+
     dataset.transform = create_transform(
         input_size,
         is_training=is_training,
@@ -297,6 +298,9 @@ def create_loader(
         loader = loader_class(dataset, **loader_args)
     if use_prefetcher:
         prefetch_re_prob = re_prob if is_training and not no_aug else 0.
+        print('PREFETCH RE PROB=', prefetch_re_prob)
+        print('MEAN=', mean)
+        print('STD=', std)
         loader = PrefetchLoader(
             loader,
             mean=mean,

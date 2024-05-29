@@ -869,7 +869,7 @@ def train_one_epoch(
         if args.channels_last:
             input = input.contiguous(memory_format=torch.channels_last)
 
-        with amp_autocast():
+        with amp_autocast():          
             output = model(input)
             loss = loss_fn(output, target)
 
@@ -1042,6 +1042,7 @@ def validate(
         plot_save_path = None,
         pred_save_path = None,
 ):
+
     batch_time_m = utils.AverageMeter()
     losses_m = utils.AverageMeter()
     top1_m = utils.AverageMeter()
@@ -1092,7 +1093,7 @@ def validate(
                 else:
                     loss = loss_fn(output, target)
             acc1, acc5 = utils.accuracy(output, target, topk=(1, 5))
-
+            
             if args.distributed:
                 reduced_loss = utils.reduce_tensor(loss.data, args.world_size)
                 acc1 = utils.reduce_tensor(acc1, args.world_size)
@@ -1102,7 +1103,7 @@ def validate(
 
             if device.type == 'cuda':
                 torch.cuda.synchronize()
-
+            
             losses_m.update(reduced_loss.item(), input.size(0))
             top1_m.update(acc1.item(), output.size(0))
             top5_m.update(acc5.item(), output.size(0))

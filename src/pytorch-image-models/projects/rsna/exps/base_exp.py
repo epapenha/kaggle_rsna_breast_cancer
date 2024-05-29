@@ -56,17 +56,10 @@ class ValTransform:
         self.interpolation = interpolation
         self.max_h, self.max_w = input_size
 
-        def _fit_resize(image, **kwargs):
-            img_h, img_w = image.shape[:2]
-            r = min(self.max_h / img_h, self.max_w / img_w)
-            new_h, new_w = int(img_h * r), int(img_w * r)
-            new_image = cv2.resize(image, (new_w, new_h),
-                                   interpolation=interpolation)
-            return new_image
-
+        
         self.transform_fn = A.Compose([
             A.Lambda(name="FitResize",
-                     image=_fit_resize,
+                     image=self._fit_resize,
                      always_apply=True,
                      p=1.0),
             A.PadIfNeeded(min_height=self.max_h,
@@ -82,7 +75,16 @@ class ValTransform:
                           p=1.0),
             ToTensorV2(transpose_mask=True)
         ])
+        
+    def _fit_resize(self, image, **kwargs):
+        img_h, img_w = image.shape[:2]
+        r = min(self.max_h / img_h, self.max_w / img_w)
+        new_h, new_w = int(img_h * r), int(img_w * r)
+        new_image = cv2.resize(image, (new_w, new_h),
+                                interpolation=self.interpolation)
+        return new_image
 
+    
     def __call__(self, img):
         return self.transform_fn(image=img)['image']
 

@@ -73,8 +73,8 @@ def fold_check(train_df, val_df):
 
 if __name__ == '__main__':
     #CSV_LABEL_PATH = os.path.join(SETTINGS.PROCESSED_DATA_DIR, 'classification', 'rsna-breast-cancer-detection', 'cleaned_label.csv')
-    CSV_LABEL_PATH = os.path.join(SETTINGS.RAW_DATA_DIR, 'train.csv')
-    SAVE_DIR = os.path.join(SETTINGS.PROCESSED_DATA_DIR, 'classification', 'rsna-breast-cancer-detection', 'cv', 'v2')
+    CSV_LABEL_PATH = os.path.join(SETTINGS.PROCESSED_DATA_DIR, 'classification', 'synthetic', 'cleaned_label.csv')
+    SAVE_DIR = os.path.join(SETTINGS.PROCESSED_DATA_DIR, 'classification', 'synthetic', 'cv', 'v2')
     os.makedirs(SAVE_DIR, exist_ok= True)
 
     df = pd.read_csv(CSV_LABEL_PATH)
@@ -88,9 +88,9 @@ if __name__ == '__main__':
         print(len(fold_train_df), len(fold_val_df))
         save_fold_train_path = os.path.join(SAVE_DIR, f'train_fold_{i}.csv')
         save_fold_val_path = os.path.join(SAVE_DIR, f'val_fold_{i}.csv')
-        fold_ret = fold_check(fold_train_df, fold_val_df)
-        print(fold_ret)
-        ret.append(fold_ret)
+        #fold_ret = fold_check(fold_train_df, fold_val_df)
+        #print(fold_ret)
+        #ret.append(fold_ret)
         # save
         fold_train_df.to_csv(save_fold_train_path, index = False)
         fold_val_df.to_csv(save_fold_val_path, index = False)
@@ -99,9 +99,9 @@ if __name__ == '__main__':
             # only do simple holdout validation
             break
 
-    for k in ret[0]:
-        print(k)
-        for fold_idx, fold_ret in enumerate(ret):
-            print('\t', fold_ret[k])
+    #for k in ret[0]:
+    #    print(k)
+    #    for fold_idx, fold_ret in enumerate(ret):
+    #        print('\t', fold_ret[k])
         
     

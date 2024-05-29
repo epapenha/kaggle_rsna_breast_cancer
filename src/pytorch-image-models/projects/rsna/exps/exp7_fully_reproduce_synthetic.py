@@ -206,7 +206,9 @@ class Exp(_BaseExp):
             'start_ratio': 1 / 3,
             'end_ratio': 1 / 7,
             'one_pos_mode': True,
+            'rsna_val': False,
         }
+        
         old_meta_len = len(self.meta)
         self.meta.update(self.args.exp_kwargs)
         assert len(self.meta) == old_meta_len
@@ -223,13 +225,13 @@ class Exp(_BaseExp):
         rsna_train_dataset_info = {
             'csv_path':
             os.path.join(SETTINGS.PROCESSED_DATA_DIR, 'classification',
-                         'rsna-breast-cancer-detection', 'cv', 'v2',
+                         'synthetic', 'cv', 'v2',
                          f'train_fold_{fold_idx}.csv'),
             'img_dir':
             os.path.join(SETTINGS.PROCESSED_DATA_DIR, 'classification',
-                         'rsna-breast-cancer-detection', 'cleaned_images')
+                         'synthetic', 'cleaned_images')
         }
-        train_datasets_info = [('rsna-breast-cancer-detection', rsna_train_dataset_info)]
+        train_datasets_info = [('synthetic', rsna_train_dataset_info)]
         EXTERNAL_DATASETS = SETTINGS.EXTERNAL_DATASETS
 
         
@@ -332,20 +334,23 @@ class Exp(_BaseExp):
         assert self.data_config is not None
 
         fold_idx = self.meta['fold_idx']
-
+        rsna_val = self.meta['rsna_val']
+                
         augment_fn = ValAugment()
         transform_fn = ValTransform(self.data_config['input_size'][1:])
 
+        val_dir = 'rsna-breast-cancer-detection' if rsna_val else 'synthetic'
+        
         rsna_val_dataset_info = {
             'csv_path':
             os.path.join(SETTINGS.PROCESSED_DATA_DIR, 'classification',
-                         'rsna-breast-cancer-detection', 'cv', 'v2',
+                         val_dir, 'cv', 'v2',
                          f'val_fold_{fold_idx}.csv'),
             'img_dir':
             os.path.join(SETTINGS.PROCESSED_DATA_DIR, 'classification',
-                         'rsna-breast-cancer-detection', 'cleaned_images')
+                         val_dir, 'cleaned_images')
         }
-        val_datasets_info = [('rsna-breast-cancer-detection', rsna_val_dataset_info)]
+        val_datasets_info = [('synthetic', rsna_val_dataset_info)]
 
         val_dataset = datasets.v3.RSNADataset(
             val_datasets_info,

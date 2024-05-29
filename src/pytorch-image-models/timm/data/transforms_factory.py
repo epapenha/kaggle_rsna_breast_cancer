@@ -21,7 +21,7 @@ def transforms_noaug_train(
         use_prefetcher=False,
         mean=IMAGENET_DEFAULT_MEAN,
         std=IMAGENET_DEFAULT_STD,
-):
+):    
     if interpolation == 'random':
         # random interpolation not supported with no-aug
         interpolation = 'bilinear'
